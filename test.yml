@@ -1,0 +1,36 @@
+macros:
+    # not implemented, only for lexers
+    char: '[\w]'
+    "\t\n ":        ws       # Nem mindegy a '' és a "". Így '\t\n' lesz a string
+    # A makróknál amúgy az első sorrend a célszerű :)
+
+lexers:
+    - első:
+        #- __maxlength__:    200 
+        - __ignore__:       ['#(?![01]).+']
+        - space:            [' ', no]
+        - newparagraph:     ['\n\n', no]
+        - newsentence:      ['\n', no]
+        - word:             ['[^\s]+', yes]
+    - második:
+        - word:
+            - tag:          ['\[\w+\]', yes]
+            - multitag:     ['\[\w+\|\w+\]', yes]
+            - delim:        ['\|\|', no]
+            - opentags:     ['\{\{', no]
+            - closetags:    ['\}\}', no]
+            - bool:         ['#[01]', yes]
+            - opendict:     ['<', no]
+            - closedict:    ['>', no]
+            - w:            ['[^|{}<>#\[\]\n]+', yes]
+
+syntax:
+    paragraph:
+        sentence+:
+            word+:
+                - w
+                - open
+                - statanalisys+
+                - analisys+
+                - close
+                - bools?

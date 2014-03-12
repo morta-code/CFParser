@@ -4,6 +4,8 @@ __version__ = '0.99b'
 import sys
 import getopt
 import yaml
+import yml_loader
+
 
 # CFPArser
 # Parancsori argumentumok értelmezése,
@@ -27,13 +29,15 @@ def get_params() -> tuple:
     else:
         try:
             name = sys.argv[1]
-            definitions = yaml.load(open(sys.argv[1]))
-            check_grammar()
+            # definitions = yaml.load(open(sys.argv[1]))
+            # check_grammar()
+            definitions = yml_loader.load_yml(name)
         except IOError:
             print("Not valid file: {}".format(sys.argv[1]))
             printhelp()
             sys.exit(2)
-        except:
+        except Exception as E:
+            print(type(E))  # TODO exception szépítés (pl. a nyelvtanellenőrzésre)
             print("Given grammar file ({}) is not valid.").format(sys.argv[1])
             sys.exit(3)
 
@@ -54,11 +58,6 @@ def get_params() -> tuple:
             sys.exit(2)
 
     return i, o, name, definitions
-
-
-def check_grammar():
-    # TODO
-    pass
 
 
 def printhelp():
