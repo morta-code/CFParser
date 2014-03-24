@@ -9,7 +9,7 @@ def main():
     input, output, name, definitions = cli.get_params()
 
     lexer.generate_dir(name)
-    lexer.generate_qx(definitions['lexers'])
+    lexer.generate_qx(definitions)
     lexer.generate_main(input, output)      # Todo: ez igazából a parser kimenete lesz
     lexer.compile_quex()
 
@@ -17,5 +17,6 @@ def main():
     # run
 
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()
 

@@ -57,7 +57,7 @@ def get_params() -> tuple:
             printhelp()
             sys.exit(2)
 
-    return i, o, name, definitions
+    return i, o, name.replace('.yml', ''), definitions
 
 
 def printhelp():

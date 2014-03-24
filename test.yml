@@ -1,28 +1,28 @@
-macros:
-    # not implemented, only for lexers
-    char: '[\w]'
-    "\t\n ":        ws       # Nem mindegy a '' és a "". Így '\t\n' lesz a string
-    # A makróknál amúgy az első sorrend a célszerű :)
+define: # header, body, stb. Ami itt kívül van, mindegyikbe bekerül.
+    char:   '[:inverse([:space:], [\[\]\|\{\}<>#]):]'
+
+header: "#include <iostream>\n#include<cstdlib>"
 
 lexers:
-    - első:
-        #- __maxlength__:    200 
-        - __ignore__:       ['#(?![01]).+']
-        - space:            [' ', no]
-        - newparagraph:     ['\n\n', no]
-        - newsentence:      ['\n', no]
-        - word:             ['[^\s]+', yes]
-    - második:
-        - word:
-            - tag:          ['\[\w+\]', yes]
-            - multitag:     ['\[\w+\|\w+\]', yes]
-            - delim:        ['\|\|', no]
-            - opentags:     ['\{\{', no]
-            - closetags:    ['\}\}', no]
-            - bool:         ['#[01]', yes]
-            - opendict:     ['<', no]
-            - closedict:    ['>', no]
-            - w:            ['[^|{}<>#\[\]\n]+', yes]
+    -   mode:      # Egyetlen egy mode esetén
+            #- __maxlength__:    200 
+            - ' ':              TKN_SPACE
+            - '\n\n':           TKN_NEWPARAGRAPH
+            - '\n':             TKN_NEWSENTENCE
+            - '{char}+':        TKN_WORD(Lexeme)
+    -   header:            "" # nem kötelező, de ha van, akkor str
+        body:              ""
+        modes:
+            - word:
+                - '\[{char}+\]':            TKN_TAG(Lexeme)
+                - '\[{char}+\|{char}+\]':   TKN_MULTITAG(Lexeme)
+                - '\|\|':                   TKN_DELIM
+                - '\{\{':                   TKN_OPENTAGS
+                - '\}\}':                   TKN_CLOSETAGS
+                - '#[01]':                  TKN_BOOLVAL(boolval(Lexeme))
+                - '<':                      TKN_OPENDICT
+                - '>':                      TKN_CLOSEDICT
+                - '{char}+':                TKN_W(Lexeme)
 
 syntax:
     paragraph:
