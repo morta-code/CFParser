@@ -29,8 +29,10 @@ def generate_qx(definitions: dict):
         if definitions.get('init'):
             if lex['init']:     lex['init'] = lex['init'] + "\n" + definitions['init']
             else:               lex['init'] = definitions['init']
-        files.append(open(str(i)+'.qx', mode='w'))
-        fill_qx(files[i], lex)
+        files.append(str(i)+'.qx')
+        f = open(files[i], mode='w')
+        fill_qx(f, lex)
+        f.close()
 
 
 # TODO itt az output kérdés nem tisztázott
@@ -66,5 +68,9 @@ def fill_qx(qxfile: _io.FileIO, lexer: dict):
         qxfile.write(lexer['init'])
         qxfile.write("}\n\n")
     # todo modes
-    # todo start
+    for mod in lexer['modes']:
+        if type(mod) is dict:
+            pass
+        else:  # mindenképpen str
+            qxfile.write("start = {};\n".format(mod))
     pass

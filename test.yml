@@ -4,28 +4,30 @@ define: # header, body, stb. Ami itt kívül van, mindegyikbe bekerül.
 header: "#include <iostream>\n#include<cstdlib>"
 
 lexers:
-    -   mode:      # Egyetlen egy mode esetén
+    -   mode:      # Egyetlen egy mode esetén (modes is megengedett)
             #- __maxlength__:    200 
             - ' ':              TKN_SPACE
             - '\n\n':           TKN_NEWPARAGRAPH
             - '\n':             TKN_NEWSENTENCE
             - '{char}+':        TKN_WORD(Lexeme)
     -   header:            "" # nem kötelező, de ha van, akkor str
-        body:              ""
+        body:              "cha boolval(){return}"
         modes:
+            - default:      # todo: lényegesen egyszerűsíteni!
+                - 
             - word:
                 - '\[{char}+\]':            TKN_TAG(Lexeme)
                 - '\[{char}+\|{char}+\]':   TKN_MULTITAG(Lexeme)
                 - '\|\|':                   TKN_DELIM
                 - '\{\{':                   TKN_OPENTAGS
                 - '\}\}':                   TKN_CLOSETAGS
-                - '#[01]':                  TKN_BOOLVAL(boolval(Lexeme))
+                - '#[01]':                  TKN_BOOLVAL(Lexeme)
                 - '<':                      TKN_OPENDICT
                 - '>':                      TKN_CLOSEDICT
                 - '{char}+':                TKN_W(Lexeme)
 
 syntax:
-    paragraph:
+    paragraph+:
         sentence+:
             word+:
                 - w
