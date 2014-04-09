@@ -48,5 +48,4 @@ private:
 };
 
 
-
 #endif // LEXER_MANAGER_T_H

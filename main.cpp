@@ -92,10 +92,10 @@ void run(std::wistream &input, std::wostream &output)
 #endif
 }
 
-#define DEFMAIN main
-int DEFMAIN(int argc, char const *argv[])
+int main(int argc, char const *argv[])
 {
-    cout << "Hello World!" << endl;
+    setlocale(LC_ALL, "hu_HU.utf8");
+    run(std::wcin, std::wcout);
     return 0;
 }
 
