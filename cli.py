@@ -3,7 +3,6 @@ __version__ = '0.99b'
 
 import sys
 import getopt
-import yaml
 import yml_loader
 
 
@@ -18,6 +17,7 @@ def get_params() -> tuple:
     i = sys.stdin
     o = sys.stdout
     definitions = None
+    qx_list = None
     name = ""
 
     if len(sys.argv) == 1 or "-h" in sys.argv:
@@ -28,21 +28,7 @@ def get_params() -> tuple:
         sys.exit()
     else:
         try:
-            name = sys.argv[1]
-            # definitions = yaml.load(open(sys.argv[1]))
-            # check_grammar()
-            definitions = yml_loader.load_yml(name)
-        except IOError:
-            print("Not valid file: {}".format(sys.argv[1]))
-            printhelp()
-            sys.exit(2)
-        except Exception as E:
-            print(type(E))  # TODO exception szépítés (pl. a nyelvtanellenőrzésre)
-            print("Given grammar file ({}) is not valid.").format(sys.argv[1])
-            sys.exit(3)
-
-        try:
-            opts, args = getopt.getopt(sys.argv[2:], "i:o:")
+            opts, args = getopt.getopt(sys.argv[1:], "i:o:y:q:")
         except getopt.GetoptError:
             printhelp()
             sys.exit(2)
@@ -52,16 +38,34 @@ def get_params() -> tuple:
                     i = open(arg, mode='r')
                 elif opt == "-o":
                     o = open(arg, mode='w')
+                elif opt == "-y":
+                    try:
+                        name = sys.argv[1]
+                        # definitions = yaml.load(open(sys.argv[1]))
+                        # check_grammar()
+                        definitions = yml_loader.load_yml(name)
+                    except IOError:
+                        print("Not valid file: {}".format(sys.argv[1]))
+                        printhelp()
+                        sys.exit(2)
+                    except Exception as E:
+                        print(type(E))  # TODO exception szépítés (pl. a nyelvtanellenőrzésre)
+                        print("Given grammar file ({}) is not valid.").format(sys.argv[1])
+                        sys.exit(3)
+                elif opt == "-q":
+                    qx_list = arg.split(',')
+                    # TODO ellenőrizni, hogy léteznek-e
         except IOError:
             print("Not valid file: {}".format(input))
             printhelp()
             sys.exit(2)
 
-    return i, o, name.replace('.yml', ''), definitions
+    return i, o, name.replace('.yml', ''), definitions, qx_list
 
 
 def printhelp():
-    print("Usage:\n\tcfparser [-h|-v]\n\tcfparser definition_file.yml [-i input] [-o output]")
+    print("Usage:\n\tcfparser [-h|-v]\n\tcfparser -y definition_file.yml [-i input] [-o output]"
+          "\nor\tcfparser -q quex_file1.qx[,quex_fileN.qx,...] [-i input] [-o output]")
 
 
 def printver():

@@ -16,6 +16,7 @@ def generate_dir(name: str):
 
 
 def generate_qx(definitions: dict):
+    global files
     for i, lex in enumerate(definitions['lexers']):
         if definitions.get('define'):
             if lex['define']:   lex['define'].update(definitions['define'])
@@ -35,13 +36,28 @@ def generate_qx(definitions: dict):
         f.close()
 
 
+def qx_list(filenames: list):
+    global files
+    files = filenames
+
+
 # TODO itt az output kérdés nem tisztázott
-def generate_main(input: _io.TextIOWrapper, output: _io.TextIOWrapper):
-    pass
+def compile_main():
+    l = len(files)
+    sources = ""
+    for i in range(1, l+1):
+        sources += " cfl_{num}_cfl_{num}.cpp".format(num=i)
+    os.popen("g++ -D CF_LEXERS_NUM={} -std=c++11 -I. -I $QUEX_PATH".format(l) +
+             "{} main.cpp -o lexer.run".format(sources))
 
 
 def compile_quex():
-    pass
+    for idx, qf in enumerate(files):
+        os.popen("quex -i {f} -o cfl_{i}::cfl_{i} --token-id-prefix TKN_{i}_ ".format(f=qf, i=idx) +
+                 "--buffer-element-type wchar_t --token-memory-management-by-user " +
+                 "--token-queue-safety-border 1 --token-queue-size 3 --source-package .")
+    # todo copy main.cpp here!
+
 
 
 def fill_qx(qxfile: _io.FileIO, lexer: dict):
