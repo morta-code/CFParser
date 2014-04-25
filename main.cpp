@@ -58,15 +58,31 @@ void run(std::wistream &input, std::wostream &output)
 #endif
 }
 
-
-int main()//(int argc, char *argv[])
+/// Parancssori paraméterek:
+/// Semmi: stdin -> stdout
+/// Egy létező fájl: fájl -> stdout
+/// Egy létező és egy létrejövő fájl: fájl -> fájl
+int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "hu_HU.utf8");
-    std::wcout << L"Ezzel a sorral tudjuk átverni a cout-ot.\n";
-    std::wifstream input("go.txt");
-    input.imbue(std::locale("C.UTF-8"));
-    run(input, std::wcout);
-    input.close();
-    return EXIT_SUCCESS;
+    //std::wcout << L"Ezzel a sorral tudjuk átverni a cout-ot.\n";
+    if (argc < 2) {
+        run(std::wcin, std::wcout);
+    } else {
+        if (argc == 2) {
+            std::wifstream input(argv[1]);
+            input.imbue(std::locale("C.UTF-8"));
+            run(input, std::wcout);
+            input.close();
+        } else {
+            std::wifstream input(argv[1]);
+            input.imbue(std::locale("C.UTF-8"));
+            std::wofstream output(argv[2], std::ofstream::out);
+            run(input, std::wcout);
+            input.close();
+            output.flush();
+        }
+    }
+    return 0;
 }
 
